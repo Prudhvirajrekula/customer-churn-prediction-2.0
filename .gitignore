@@ -15,10 +15,8 @@ churn-env/
 .ipynb_checkpoints/
 
 # === Model Artifacts ===
-*.pkl
 *.npy
 *.h5
-*.pt
 *.joblib
 *.zip
 
