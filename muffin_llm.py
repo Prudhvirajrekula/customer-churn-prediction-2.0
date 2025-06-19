@@ -1,6 +1,4 @@
 # muffin_llm.py
-# Handles OpenRouter API integration to call Mistral LLM
-
 import requests
 import os
 import streamlit as st
@@ -18,7 +16,7 @@ HEADERS = {
     "X-Title": "Muffin LLM Chatbot"
 }
 
-MODEL_NAME = "mistral-7b-instruct"
+MODEL_NAME = "mistralai/mistral-7b-instruct:free"
 
 def call_muffin_llm(user_message, history=None):
     """
