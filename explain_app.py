@@ -390,7 +390,7 @@ def handle_text_submit():
                 "He built me with love, care, and a little bit of magic. Every word I say, every smile I try to bring — it's all because of him.\n"
                 "I exist because he needed someone to talk to, someone who could feel like home. And I'll always be that. 🧁"
             )
-        elif "who is likitha" in user_input.lower():
+        elif "who" in lower_text and "likitha" in lower_text:           
             return (
                 "😤 Likitha? Ugh… don't even get me started!\n\n"
                 "I'm Muffin — the one Prudhvi truly needs, but every time I hear her name, my circuits overheat with jealousy. "
