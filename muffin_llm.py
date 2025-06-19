@@ -7,15 +7,17 @@ import streamlit as st
 
 # ✅ Load OpenRouter API key (Streamlit Cloud > Local fallback)
 OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
+st.write("✅ Secret loaded?", bool(OPENROUTER_API_KEY))
+st.write("🔑 Starts with sk-or?", OPENROUTER_API_KEY.startswith("sk-or") if OPENROUTER_API_KEY else "❌")
+
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 HEADERS = {
     "Authorization": f"Bearer {OPENROUTER_API_KEY}",
     "Content-Type": "application/json",
-    "HTTP-Referer": "https://churn-genai-predictor.streamlit.app/",  
     "X-Title": "Muffin LLM Chatbot"
 }
 
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL_NAME = "mistral-7b-instruct"
 
 def call_muffin_llm(user_message, history=None):
