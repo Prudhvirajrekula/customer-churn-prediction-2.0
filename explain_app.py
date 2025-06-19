@@ -8,6 +8,9 @@ import markdown
 from html import escape
 from nlp_matcher import match_question_nlp
 
+import streamlit.components.v1 as components
+
+
 # Load data and models
 df = pd.read_csv("data/model_features.csv").dropna().head(100)
 model = joblib.load("models/model.pkl")
@@ -218,6 +221,8 @@ st.markdown("<h1 style='text-align:center;'>🧠 Churn & LTV Chatbot</h1>", unsa
 # Layout columns
 sidebar, main = st.columns([1, 2], gap="large")
 
+
+
 # LEFT SIDEBAR = Customer Panel
 with sidebar:
     st.header("📋 Customer Info")
@@ -343,14 +348,39 @@ with main:
             "time": datetime.datetime.now().strftime("%I:%M %p").lstrip("0")
         })
 
+        st.markdown("""
+        <script>
+            document.getElementById("muffin-footer").scrollIntoView({ behavior: "smooth" });
+        </script>
+        """, unsafe_allow_html=True)
+
+
         st.session_state.chat_input_text = ""
         st.session_state.input_submitted = False
         st.rerun()
 
     # Clear history
     st.markdown("### 🗨️ Chat Panel")
-    if st.button("🧹 Clear Chat History"):
-        st.session_state.chat = []
+
+    # Side-by-side buttons with tighter spacing
+    col1, col2 = st.columns([1, 1], gap="small")
+
+    with col1:
+        st.button("🧹 Clear Chat History", key="clear_chat")
+
+    with col2:
+        if st.button("⬇️ Scroll to Latest", key="scroll_latest"):
+            components.html("""
+                <script>
+                    const footer = window.parent.document.getElementById("muffin-footer");
+                    if (footer) {
+                        footer.scrollIntoView({ behavior: "smooth" });
+                    }
+                </script>
+            """, height=0)
+
+
+
 
     # Chat Display (latest at top)
     st.markdown("<div class='chat-wrapper'>", unsafe_allow_html=True)
@@ -387,20 +417,19 @@ with main:
                 """,
                 unsafe_allow_html=True
             )
+st.markdown("</div>", unsafe_allow_html=True)
 
 
 
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# Footer disclaimer
-st.markdown("""<hr style="margin-top:2rem; margin-bottom:1rem;">""", unsafe_allow_html=True)
-
+# 👇 Footer + Auto-scroll anchor element
 st.markdown("""
+<div id="muffin-footer"></div>
+<hr style="margin-top:2rem; margin-bottom:1rem;">
 <div style='text-align:center; font-size:13px; color:#888;'>
-    🧁 <b>Muffin</b> is an AI-powered assistant designed to help you interpret churn and LTV predictions.
-    While it uses predictive models and rule-based logic, it's still learning and may not always reflect the full business context.<br>
+    🧁 <b>Muffin</b> is an AI-powered assistant designed to help you interpret churn and LTV predictions.<br>
+    While it uses predictive models and rule-based logic, it's still learning and may not always reflect the full business context.<br><br>
     <i>Responses are based on available data as of now and do not include real-time updates.</i><br>
     Created with ❤️ by <b>Prudhvi Raj</b>.
 </div>
 """, unsafe_allow_html=True)
+
