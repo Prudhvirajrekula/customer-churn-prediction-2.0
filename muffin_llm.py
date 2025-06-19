@@ -16,6 +16,7 @@ HEADERS = {
     "X-Title": "Muffin LLM Chatbot"
 }
 
+
 MODEL_NAME = "mistralai/mistral-7b-instruct:free"
 
 def call_muffin_llm(user_message, history=None):

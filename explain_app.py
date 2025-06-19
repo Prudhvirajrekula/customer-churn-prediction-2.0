@@ -286,7 +286,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 
-def query_llm(user_question, customer_data_text, model_name):
+def query_llm(user_question, customer_data_text, model_name, api_key):
     prompt = f"""
 You are a customer churn explanation assistant.
 
@@ -298,18 +298,27 @@ User question:
 
 Respond helpfully using business language and clear reasoning.
 """
-    response = requests.post(API_URL, headers={
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "X-Title": "Muffin LLM Chatbot"
-    }, json={
+    }
+
+    payload = {
         "model": model_name,
         "messages": [{"role": "user", "content": prompt}]
-    })
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"].strip()
-    else:
-        return f"⚠️ LLM request failed: {response.status_code} → {response.text}"
+    }
+
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"].strip()
+        else:
+            return f"⚠️ LLM request failed: {response.status_code} → {response.text}"
+    except Exception as e:
+        return f"❌ Exception occurred while calling LLM: {str(e)}"
 
 
 # ---------------- CHAT STATE ----------------
