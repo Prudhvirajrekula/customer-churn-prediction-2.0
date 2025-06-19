@@ -261,7 +261,6 @@ with st.sidebar:
         response = requests.post(API_URL, headers={
             "Authorization": f"Bearer {OPENROUTER_API_KEY}",
             "Content-Type": "application/json",
-            "HTTP-Referer": REFERER,
             "X-Title": "Muffin LLM Chatbot"
         }, json={
             "model": model_name,
