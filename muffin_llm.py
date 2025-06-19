@@ -4,13 +4,9 @@
 import requests
 import os
 import streamlit as st
-from dotenv import load_dotenv
-
-# Load environment variables locally
-load_dotenv(".env")
 
 # ✅ Load OpenRouter API key (Streamlit Cloud > Local fallback)
-OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY") or os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
 
 HEADERS = {
     "Authorization": f"Bearer {OPENROUTER_API_KEY}",

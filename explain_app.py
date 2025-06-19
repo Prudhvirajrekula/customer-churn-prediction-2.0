@@ -6,13 +6,9 @@ import os
 import random
 import requests
 from datetime import datetime
-from dotenv import load_dotenv
-
-# ---------------- ENV & CONFIG ----------------
-load_dotenv(".env")
 
 # ✅ Securely load API key with Streamlit fallback
-OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY") or os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 REFERER = "https://churn-genai-predictor.streamlit.app/"  # ✅ Set to deployed URL
