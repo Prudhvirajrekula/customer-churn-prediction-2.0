@@ -150,9 +150,9 @@ Whether you're a retention strategist or product analyst, Muffin helps you:
 
 👉 **Want the full experience?** Try our advanced version of Muffin:
 
-- 🧠 Deep-dive customer Q&A  
-- 📊 SHAP + LIME explainability  
-- 🗂 Upload your own customer data  
+- 🧠 Ask open-ended churn questions   
+- 🗂 Upload your own customer data 
+- 💬 Chat with a GenAI-powered assistant trained on churn insights 
 - ✍️ Conversational interface powered by NLP  
 """)
 
