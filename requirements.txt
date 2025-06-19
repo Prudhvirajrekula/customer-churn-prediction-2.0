@@ -1,0 +1,16 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+joblib
+shap
+lime
+plotly
+xgboost
+sentence-transformers
+streamlit
+imblearn
+torch
+sqlalchemy
+sqlite3-binary ; platform_system != "Windows"  # optional for Linux/mac

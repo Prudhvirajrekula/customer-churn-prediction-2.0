@@ -1,0 +1,13 @@
+[raw_customers]
+    age {label:"REAL"}
+    churn {label:"REAL"}
+    contract_length {label:"TEXT"}
+    customer_id {label:"REAL"}
+    gender {label:"TEXT"}
+    last_interaction {label:"REAL"}
+    payment_delay {label:"REAL"}
+    subscription_type {label:"TEXT"}
+    support_calls {label:"REAL"}
+    tenure {label:"REAL"}
+    total_spend {label:"REAL"}
+    usage_frequency {label:"REAL"}

@@ -1,0 +1,11 @@
+customer_id,cluster,persona
+2.0,2,Uncertain Engagement
+3.0,3,"High Usage, Low Churn"
+4.0,0,"High Risk, Low Value"
+5.0,2,Uncertain Engagement
+6.0,2,Uncertain Engagement
+8.0,3,"High Usage, Low Churn"
+9.0,0,"High Risk, Low Value"
+10.0,0,"High Risk, Low Value"
+11.0,2,Uncertain Engagement
+12.0,1,Stable Mid-tier

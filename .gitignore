@@ -1,0 +1,36 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.so
+*.log
+
+# === Environments ===
+.env
+.env.*
+venv/
+churn-env/
+*.env
+
+# === Jupyter / Notebook Stuff ===
+.ipynb_checkpoints/
+
+# === Model Artifacts ===
+*.pkl
+*.npy
+*.h5
+*.pt
+*.joblib
+*.zip
+
+# === IDE Config ===
+.vscode/
+.idea/
+
+# === OS-specific ===
+.DS_Store
+Thumbs.db
+
+# === Node (if any frontend involved) ===
+node_modules/
+build/
+dist/
