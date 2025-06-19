@@ -157,7 +157,7 @@ Whether you're a retention strategist or product analyst, Muffin helps you:
 """)
 
     # 🔗 Mid-section launch button
-    st.link_button("🚀 Launch Full Muffin Explainability Chatbot", "YOUR URL")  # Replace when deployed
+    st.link_button("🚀 Launch Full Muffin Explainability Chatbot", "https://churn-genai-predictor.streamlit.app/")
 
     st.markdown("---")
     st.markdown("### ⚡ Quick FAQs (Suggested Questions)")
