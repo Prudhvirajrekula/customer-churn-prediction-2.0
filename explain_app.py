@@ -440,7 +440,7 @@ def handle_text_submit():
 
         else:
             with st.spinner("🤖 Muffin is thinking..."):
-                reply = query_llm(user_text, format_customer_context(customer), MODEL_NAME)
+                reply = query_llm(q, format_customer_context(customer), MODEL_NAME, OPENROUTER_API_KEY)
 
         st.session_state.chat_history.append({
             "role": "assistant",
