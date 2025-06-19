@@ -5,8 +5,7 @@ import streamlit as st
 
 # ✅ Load OpenRouter API key (Streamlit Cloud > Local fallback)
 OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
-st.write("✅ Secret loaded?", bool(OPENROUTER_API_KEY))
-st.write("🔑 Starts with sk-or?", OPENROUTER_API_KEY.startswith("sk-or") if OPENROUTER_API_KEY else "❌")
+
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 

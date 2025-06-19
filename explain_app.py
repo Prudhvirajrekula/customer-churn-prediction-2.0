@@ -12,8 +12,6 @@ from datetime import datetime
 # ✅ Securely load API key with Streamlit fallback
 OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
 
-st.write("✅ Secret loaded?", bool(OPENROUTER_API_KEY))
-st.write("🔑 Starts with sk-or?", OPENROUTER_API_KEY.startswith("sk-or") if OPENROUTER_API_KEY else "❌")
 
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -311,10 +309,6 @@ Respond helpfully using business language and clear reasoning.
         "messages": [{"role": "user", "content": prompt}]
     }
 
-    # 🔍 Debug
-    st.write("🔑 API Key:", repr(api_key))
-    st.write("📬 Headers:", headers)
-    st.write("📦 Payload:", payload)
 
     try:
         response = requests.post(API_URL, headers=headers, json=payload)
