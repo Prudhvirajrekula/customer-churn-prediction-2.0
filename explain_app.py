@@ -506,7 +506,7 @@ if "process_question" in st.session_state and st.session_state.process_question:
         reply = casual_response()
     else:
         with st.spinner("🤖 Muffin is thinking..."):
-            TypeError: query_llm() missing 1 required positional argument: 'api_key'
+            reply = query_llm(q, format_customer_context(customer), MODEL_NAME, OPENROUTER_API_KEY)
 
 
     # Add bot response to chat history
