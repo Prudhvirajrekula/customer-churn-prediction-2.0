@@ -12,3 +12,4 @@ imblearn
 sqlalchemy
 markdown
 sentence-transformers
+dotenv
