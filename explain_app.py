@@ -216,7 +216,7 @@ suggested_questions = [
 
 # Set layout
 st.set_page_config(page_title="Muffin Chatbot", layout="wide")
-st.markdown("<h1 style='text-align:center;'>🧠 Churn & LTV Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>🧁 Muffin AI — Predictive Intelligence Bot for Churn & LTV</h1>", unsafe_allow_html=True)
 
 # Layout columns
 sidebar, main = st.columns([1, 2], gap="large")
