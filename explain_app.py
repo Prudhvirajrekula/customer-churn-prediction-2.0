@@ -1,3 +1,4 @@
+from wsgiref import headers
 import streamlit as st
 import pandas as pd
 import joblib
@@ -310,8 +311,15 @@ Respond helpfully using business language and clear reasoning.
         "messages": [{"role": "user", "content": prompt}]
     }
 
+    # 🔍 Debug
+    st.write("🔑 API Key:", repr(api_key))
+    st.write("📬 Headers:", headers)
+    st.write("📦 Payload:", payload)
+
     try:
         response = requests.post(API_URL, headers=headers, json=payload)
+        st.write("🔁 Status Code:", response.status_code)
+        st.write("🧠 Raw Response:", response.text)
 
         if response.status_code == 200:
             return response.json()["choices"][0]["message"]["content"].strip()
@@ -319,6 +327,7 @@ Respond helpfully using business language and clear reasoning.
             return f"⚠️ LLM request failed: {response.status_code} → {response.text}"
     except Exception as e:
         return f"❌ Exception occurred while calling LLM: {str(e)}"
+
 
 
 # ---------------- CHAT STATE ----------------
