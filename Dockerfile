@@ -15,9 +15,7 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Copy pre-downloaded PyTorch and dependencies (Linux-compatible wheels)
-COPY wheels /wheels
-RUN pip install /wheels/*.whl
+RUN pip install torch==2.7.1 --no-cache-dir
 
 # Copy and install project requirements
 COPY requirements.txt .
