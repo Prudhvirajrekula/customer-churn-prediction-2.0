@@ -1,0 +1,17 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+churn-env/
+env/
+venv/
+
+# Ignore VS Code/editor junk
+.vscode/
+.idea/
+
+# Ignore secret files
+.env

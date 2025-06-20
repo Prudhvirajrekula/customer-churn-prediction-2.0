@@ -312,8 +312,6 @@ Respond helpfully using business language and clear reasoning.
 
     try:
         response = requests.post(API_URL, headers=headers, json=payload)
-        st.write("🔁 Status Code:", response.status_code)
-        st.write("🧠 Raw Response:", response.text)
 
         if response.status_code == 200:
             return response.json()["choices"][0]["message"]["content"].strip()
