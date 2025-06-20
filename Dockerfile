@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 8501
 
 # Start the app
-CMD ["streamlit", "run", "explain_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "explain_app.py", "--server.port=7860", "--server.address=0.0.0.0"]

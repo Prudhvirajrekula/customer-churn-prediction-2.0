@@ -32,3 +32,5 @@ Thumbs.db
 node_modules/
 build/
 dist/
+
+wheels/
