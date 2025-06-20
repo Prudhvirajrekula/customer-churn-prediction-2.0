@@ -34,4 +34,6 @@ build/
 dist/
 
 wheels/
+*.whl
+
 .streamlit/
