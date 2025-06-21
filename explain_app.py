@@ -287,16 +287,18 @@ with st.sidebar:
 
 def query_llm(user_question, customer_data_text, model_name, api_key):
     prompt = f"""
-You are a customer churn explanation assistant.
+You are a helpful data assistant. Be concise, specific, and business-focused.
 
-Customer details:
+Below is a customer's data:
+
 {customer_data_text}
 
-User question:
-{user_question}
+Now answer the user's question:
+"{user_question}"
 
-Respond helpfully using business language and clear reasoning.
+Only answer based on the data above. If the data does not contain the answer, reply with "Data not available for this question."
 """
+
 
     headers = {
         "Authorization": f"Bearer {api_key}",
