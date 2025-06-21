@@ -287,17 +287,24 @@ with st.sidebar:
 
 def query_llm(user_question, customer_data_text, model_name, api_key):
     prompt = f"""
-You are a helpful data assistant. Be concise, specific, and business-focused.
+You are an AI assistant that assesses churn risk for a customer.
 
-Below is a customer's data:
-
+Here is their data:
 {customer_data_text}
 
-Now answer the user's question:
+Task:
+Analyze the data and answer ONLY this question from the user:
 "{user_question}"
 
-Only answer based on the data above. If the data does not contain the answer, reply with "Data not available for this question."
+Respond in this strict format:
+
+[Churn Risk Level]: <Low / Moderate / High>
+[Key Factors]: <List up to 3 key features affecting the risk>
+[Reasoning]: <One short paragraph that explains the logic>
+
+If data is missing, say: "Data not available."
 """
+
 
 
     headers = {
