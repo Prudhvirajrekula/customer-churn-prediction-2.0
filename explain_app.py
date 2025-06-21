@@ -314,8 +314,9 @@ If data is missing, say: "Data not available."
     }
 
     payload = {
-        "model": model_name,
-        "messages": [{"role": "user", "content": prompt}]
+    "model": model_name,
+    "messages": [{"role": "user", "content": prompt}],
+    "temperature": 0.4
     }
 
 
