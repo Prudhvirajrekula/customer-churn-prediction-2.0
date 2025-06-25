@@ -15,8 +15,9 @@ Designed for **data scientists, analysts, and growth teams**, the platform deliv
   [`churn-intel-ai.streamlit.app`](https://churn-intel-ai.streamlit.app/)
 
 - **💬 Muffin Chat Assistant**  
-  [`churn-genai-predictor.streamlit.app`](https://churn-genai-predictor.streamlit.app/)
-
+  [`via streamlit`](https://churn-genai-predictor.streamlit.app/)
+  [`via hugging spacep`](https://huggingface.co/spaces/prudhvirekula/muffin-chatbot)
+  
 ---
 
 ## 🧱 Architecture Overview
