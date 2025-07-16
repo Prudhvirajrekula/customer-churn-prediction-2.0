@@ -1,6 +1,6 @@
 
 
-# 🧁 Muffin – Customer Churn & LTV Intelligence Platform
+# 🧁 Muffin: Gemini-Powered Customer Churn Prediction Assistant
 
 A full-stack analytics platform integrating **SQL-based feature pipelines**, **hybrid ML/LSTM modeling**, and a **Gemini-powered conversational assistant** — purpose-built for data science, product, and growth teams.
 
