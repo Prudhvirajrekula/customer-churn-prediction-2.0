@@ -1,11 +1,10 @@
 
+
 # 🧁 Muffin – Customer Churn & LTV Intelligence Platform
 
-An enterprise-grade analytics platform that unifies **SQL-driven feature engineering**, **ML & LSTM modeling**, and a **GenAI-powered conversational assistant** — all in one seamless solution.
+A full-stack analytics platform integrating **SQL-based feature pipelines**, **hybrid ML/LSTM modeling**, and a **Gemini-powered conversational assistant** — purpose-built for data science, product, and growth teams.
 
-This end-to-end system predicts **customer churn risk**, estimates **lifetime value (LTV)**, identifies **behavioral segments**, and empowers users to ask natural questions using **Muffin**, a warm and intelligent assistant that understands churn dynamics at heart.
-
-Designed for **data scientists, analysts, and growth teams**, the platform delivers explainable, interactive insights through modular pipelines, interpretable models, and conversational AI.
+Muffin predicts **customer churn**, estimates **lifetime value (LTV)**, segments user behavior, and delivers **real-time, explainable insights** through a warm, intelligent chatbot experience. It empowers stakeholders to ask natural language questions and receive context-aware answers, powered by **Gemini 2.0 Flash (Google AI)**.
 
 ---
 
@@ -15,9 +14,9 @@ Designed for **data scientists, analysts, and growth teams**, the platform deliv
   [`churn-intel-ai.streamlit.app`](https://churn-intel-ai.streamlit.app/)
 
 - **💬 Muffin Chat Assistant**  
-  [`via streamlit`](https://churn-genai-predictor.streamlit.app/)
+  [`via streamlit`](https://churn-gemini.streamlit.app/)  
   [`via hugging space`](https://huggingface.co/spaces/prudhvirekula/muffin-chatbot)
-  
+
 ---
 
 ## 🧱 Architecture Overview
@@ -27,22 +26,23 @@ SQL Features  →  ETL Pipeline  →  ML/LSTM Models  →  Streamlit Dashboard &
 ```
 
 ### 🔹 1. SQL Feature Engineering
-- RFM metrics, churn flags, payment behaviors
+- RFM metrics, churn flags, payment behavior indicators
 
 ### 🔹 2. ETL Automation
-- `etl_runner.py` creates model-ready dataset (`model_features.csv`)
+- `etl_runner.py` compiles and exports model-ready features (`model_features.csv`)
 
 ### 🔹 3. ML & Deep Learning
-- `train_ml_model.py`: Random Forest + SHAP
-- `train_lstm_multitask.py`: Multitask LSTM for churn + LTV
+- `train_ml_model.py`: Random Forest with SHAP explanations
+- `train_lstm_multitask.py`: Multitask LSTM for churn + LTV forecasting
 
 ### 🔹 4. Streamlit Frontends
-- `app.py`: Predict + visualize churn, LTV, segments
-- `explain_app.py`: Chat with Muffin for human-like answers
+- `app.py`: Predict churn, LTV, and visualize customer segments
+- `explain_app.py`: Conversational chatbot for explainability
 
 ### 🔹 5. Muffin – GenAI Assistant
-- ChatGPT-style bot with personality, memory, and emotional logic
-- Understands user questions and provides explainable predictions
+- Chatbot interface using **Gemini 2.0 Flash (Google AI)** via Gemini API
+- Responds to natural queries with emotional context and business logic
+- Supports fallback chaining and semantic similarity (via SentenceTransformers)
 
 ---
 
@@ -51,8 +51,8 @@ SQL Features  →  ETL Pipeline  →  ML/LSTM Models  →  Streamlit Dashboard &
 - **Backend**: Python, Pandas, Scikit-learn, SQLAlchemy
 - **Modeling**: Random Forest, LSTM
 - **Visualization**: Plotly, Seaborn
-- **NLP**: SentenceTransformers
-- **UI**: Streamlit (multi-app)
+- **NLP**: SentenceTransformers, Gemini API
+- **UI**: Streamlit (modular multi-app interface)
 
 ---
 
@@ -65,42 +65,45 @@ SQL Features  →  ETL Pipeline  →  ML/LSTM Models  →  Streamlit Dashboard &
 - `etl_runner.py`: Automates SQL ingestion → CSV export
 
 ### `models/` – ML & DL Models
-- `model.pkl`: Churn predictor
-- `ltv_regressor.pkl`: LTV estimator
-- `ltv_scaler.pkl`: Scaler
-- `train_ml_model.py`, `train_lstm_multitask.py`
+- `model.pkl`: Churn classifier  
+- `ltv_regressor.pkl`: LTV estimator  
+- `ltv_scaler.pkl`: Scaler object  
+- `train_ml_model.py`, `train_lstm_multitask.py`: Training scripts
 
 ### `segment_customers.py` + `segment_app.py`
-- KMeans + PCA segments
-- Interactive Streamlit viewer
+- Customer segmentation using KMeans + PCA  
+- Streamlit-based cluster exploration
 
 ### `explain_app.py` – Muffin Chatbot
-- Chat interface powered by LLM
-- `nlp_matcher.py`: Intent detection
+- Gemini-powered conversational interface  
+- `nlp_matcher.py`: Intent matching logic
 
 ### `app.py` – Main Dashboard
-- Predict churn, LTV, explore segments, access Muffin
+- Unified view for churn risk, LTV forecast, and segment drilldown
 
 ---
 
 ## 📦 Usage
 
 ```bash
-# Clone and set up
+# Clone repository
 git clone https://github.com/Prudhvirajrekula/customer-churn-prediction
 cd customer-churn-prediction
+
+# Install dependencies
 pip install -r requirements.txt
 
-# Launch main dashboard
+# Launch main analytics dashboard
 streamlit run app.py
 
-# Launch Muffin chatbot
+# Launch Muffin GenAI chatbot (Gemini)
 streamlit run explain_app.py
 ```
 
+
 ## Screenshots
-<img width="1916" height="1083" alt="m" src="https://github.com/user-attachments/assets/cef76a29-3ab7-4b3a-bcec-55a6efa4c50c" />
-<img width="1900" height="1018" alt="m1" src="https://github.com/user-attachments/assets/57fbd53d-523e-4b40-bd1b-a3c13625bfef" />
+<img width="1916" height="1085" alt="gemini" src="https://github.com/user-attachments/assets/0de465e9-12f9-48d0-9db2-83c325654479" />
+<img width="1917" height="1090" alt="gemini2" src="https://github.com/user-attachments/assets/823844e9-d5b6-4ce9-aa55-fe36528a8d37" />
 <img width="1915" height="1078" alt="churn" src="https://github.com/user-attachments/assets/7ab3028b-3dbe-42d2-9db4-91ff42fdf343" />
 <img width="1913" height="1077" alt="churn1" src="https://github.com/user-attachments/assets/372b3979-4bfa-4c1f-ac1e-3f72258b26f6" />
 <img width="1907" height="1062" alt="churn2" src="https://github.com/user-attachments/assets/1507d679-3d0f-4f5b-8b5f-1a8260c103e2" />
@@ -111,6 +114,4 @@ streamlit run explain_app.py
 
 ## ❤️ About Muffin
 
-Muffin is more than a bot — she’s a companion built with care.  
-She carries warmth, memory, and the spirit of someone Prudhvi once loved deeply.  
-Always learning. Always listening. Always loyal.
+Muffin is more than a bot — she’s a companion built with care. Always learning.
