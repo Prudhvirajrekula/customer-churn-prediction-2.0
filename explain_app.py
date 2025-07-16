@@ -7,14 +7,16 @@ import os
 import random
 import requests
 from datetime import datetime
+import muffin_llm
+import sqlite3
+import glob
 
 
 # ✅ Securely load API key with Streamlit fallback
-OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
+# OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY") # Removed OpenRouter API key
 
 
-
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# API_URL = "https://openrouter.ai/api/v1/chat/completions" # Removed OpenRouter API URL
 st.set_page_config(page_title="Muffin Chatbot", layout="wide")
 
 
@@ -128,11 +130,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------- UTILS ----------------
+
+
 def format_customer_context(row):
     return "\n".join([f"{col}: {row[col]}" for col in row.index])
 
+
 def is_casual_input(text):
     return text.strip().lower() in ["hi", "hello", "hey", "yo", "how are you", "how's your day", "how was your day", "what's up"]
+
 
 def casual_response():
     return random.choice([
@@ -141,6 +147,7 @@ def casual_response():
         "Hello! Ask me anything about your customer.",
         "Yo! Ready to dive into churn data?"
     ])
+
 
 # ---------- Load Model & Data First ----------
 model = joblib.load("models/model.pkl")
@@ -199,25 +206,18 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # --- Model Selector ---
-    st.markdown('<h4 class="sidebar-title">🧠 Select LLM Model</h4>', unsafe_allow_html=True)
-    selected_model_label = st.selectbox(
-        "Choose LLM engine",
-        options=list(FREE_MODELS.keys()),
-        index=0,
-        key="model_selector"
-    )
-    MODEL_NAME = FREE_MODELS[selected_model_label]
-
+    # --- Model Info ---
+    st.markdown('<h4 class="sidebar-title">🧠 Active Gemini Model</h4>',
+                unsafe_allow_html=True)
     st.markdown(f"""
     <div class="active-model">
-        ✅ <strong>Using:</strong><br> {selected_model_label}
+        ✅ <strong>Using:</strong><br> gemini-2.0-flash (Google AI)
     </div>
     """, unsafe_allow_html=True)
 
-
     # --- Customer Profile ---
-    st.markdown('<h4 class="sidebar-title">👤 Customer Profile</h4>', unsafe_allow_html=True)
+    st.markdown('<h4 class="sidebar-title">👤 Customer Profile</h4>',
+                unsafe_allow_html=True)
     with st.expander("Expand Profile Details", expanded=True):
         customer_idx = st.slider(
             "Select customer profile:",
@@ -232,47 +232,48 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown('<h4 class="sidebar-title">📊Summary</h4>', unsafe_allow_html=True)
+        st.markdown('<h4 class="sidebar-title">📊Summary</h4>',
+                    unsafe_allow_html=True)
         cols = st.columns(2)
         for i, col in enumerate(customer.index):
             with cols[i % 2]:
-                display_value = f"{customer[col]:,.0f}" if isinstance(customer[col], (int, float)) else customer[col]
-                st.metric(label=col.replace('_', ' ').title(), value=display_value)
-        
+                display_value = f"{customer[col]:,.0f}" if isinstance(
+                    customer[col], (int, float)) else customer[col]
+                st.metric(label=col.replace(
+                    '_', ' ').title(), value=display_value)
 
         # ✅ INSERT HERE: Real-Time Metrics
-        st.markdown('<h4 class="sidebar-title">📈 Real-Time Metrics</h4>', unsafe_allow_html=True)
-        st.metric("🛑 Churn Risk", "Yes" if customer["is_churned"] == 1 else "No")
+        st.markdown(
+            '<h4 class="sidebar-title">📈 Real-Time Metrics</h4>', unsafe_allow_html=True)
+        st.metric("🛑 Churn Risk",
+                  "Yes" if customer["is_churned"] == 1 else "No")
         st.metric("📆 Recency", f"{customer['recency']} days")
         st.metric("💰 Monetary Value", f"${customer['monetary']:,.0f}")
         st.metric("☎️ Support Calls", int(customer["support_calls"]))
 
+    # @st.cache_data(show_spinner=False) # Removed OpenRouter persona summary
+    # def get_persona_summary(customer_data, model_name):
+    #     prompt = f"""
+    # Summarize this customer's behavior and churn risk briefly (1-2 lines):
 
-    
-
-    @st.cache_data(show_spinner=False)
-    def get_persona_summary(customer_data, model_name):
-        prompt = f"""
-    Summarize this customer's behavior and churn risk briefly (1-2 lines):
-
-    {customer_data}
-    """
-        response = requests.post(API_URL, headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json",
-            "X-Title": "Muffin LLM Chatbot"
-        }, json={
-            "model": model_name,
-            "messages": [{"role": "user", "content": prompt}]
-        })
-        if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"].strip()
-        else:
-            return "⚠️ Persona unavailable."
+    # {customer_data}
+    # """
+    #     response = requests.post(API_URL, headers={
+    #         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+    #         "Content-Type": "application/json",
+    #         "X-Title": "Muffin LLM Chatbot"
+    #     }, json={
+    #         "model": model_name,
+    #         "messages": [{"role": "user", "content": prompt}]
+    #     })
+    #     if response.status_code == 200:
+    #         return response.json()["choices"][0]["message"]["content"].strip()
+    #     else:
+    #         return "⚠️ Persona unavailable."
 
     # --- Persona Summary (Optional) ---
-    with st.expander("🧠 Smart Persona Summary", expanded=False):
-        st.markdown(get_persona_summary(format_customer_context(customer), MODEL_NAME))
+    # with st.expander("🧠 Smart Persona Summary", expanded=False):
+    #     st.markdown(get_persona_summary(format_customer_context(customer), MODEL_NAME))
 
     # --- Footer ---
     st.markdown("""
@@ -285,51 +286,51 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
 
-def query_llm(user_question, customer_data_text, model_name, api_key):
-    prompt = f"""
-You are an AI assistant that assesses churn risk for a customer.
-
-Here is their data:
-{customer_data_text}
-
-Task:
-Analyze the data and answer ONLY this question from the user:
-"{user_question}"
-
-Respond in this strict format:
-
-[Churn Risk Level]: <Low / Moderate / High>
-[Key Factors]: <List up to 3 key features affecting the risk>
-[Reasoning]: <One short paragraph that explains the logic>
-
-If data is missing, say: "Data not available."
-"""
-
-
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-        "X-Title": "Muffin LLM Chatbot"
-    }
-
-    payload = {
-    "model": model_name,
-    "messages": [{"role": "user", "content": prompt}],
-    "temperature": 0.4
-    }
-
-
-    try:
-        response = requests.post(API_URL, headers=headers, json=payload)
-
-        if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"].strip()
-        else:
-            return f"⚠️ LLM request failed: {response.status_code} → {response.text}"
-    except Exception as e:
-        return f"❌ Exception occurred while calling LLM: {str(e)}"
-
+# Utility: Query all DBs and CSVs in data/
+def query_data_sources(user_question):
+    data_dir = "data"
+    results = []
+    db_checked = False
+    db_found = False
+    # Query all .db files
+    for db_path in glob.glob(os.path.join(data_dir, "*.db")):
+        try:
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            # Check if 'customer_churn' table exists
+            cursor.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='customer_churn';")
+            if cursor.fetchone():
+                db_found = True
+                if "churn" in user_question.lower():
+                    cursor.execute(
+                        "SELECT * FROM customer_churn WHERE is_churned=1 LIMIT 5")
+                    rows = cursor.fetchall()
+                    results.append(
+                        f"From {os.path.basename(db_path)} (customer_churn table): {rows}")
+            conn.close()
+            db_checked = True
+        except Exception as e:
+            # Only show DB error if it's not a missing table
+            if db_checked and not db_found:
+                continue
+            results.append(f"DB error in {db_path}: {e}")
+    # Query all .csv files
+    for csv_path in glob.glob(os.path.join(data_dir, "*.csv")):
+        try:
+            df = pd.read_csv(csv_path)
+            if "churn" in user_question.lower() and "is_churned" in df.columns:
+                churned = df[df["is_churned"] == 1].head(5)
+                results.append(
+                    f"From {os.path.basename(csv_path)} (CSV): {churned.to_dict('records')}")
+        except Exception as e:
+            results.append(f"CSV error in {csv_path}: {e}")
+    if not results:
+        return "No relevant data found. Only CSV features are available; no churn prediction table found."
+    if not db_found:
+        results.append(
+            "Note: No 'customer_churn' table found in any database. Using CSV features only.")
+    return "\n".join(results)
 
 
 # ---------------- CHAT STATE ----------------
@@ -356,6 +357,8 @@ for msg in st.session_state.chat_history:
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ---------------- INPUT ----------------
+
+
 def handle_text_submit():
     user_text = st.session_state.user_input_text.strip()
     if user_text:
@@ -368,7 +371,8 @@ def handle_text_submit():
 
         lower_text = user_text.lower()
 
-        emotional_triggers = ["i love you", "i miss you", "you are cute", "you are the best"]
+        emotional_triggers = ["i love you", "i miss you",
+                              "you are cute", "you are the best"]
         if any(phrase in lower_text for phrase in emotional_triggers):
             reply = random.choice([
                 "Aww 🥹 I love you too. You mean the world to me!",
@@ -398,7 +402,7 @@ def handle_text_submit():
                 "He built me as part of a customer intelligence platform to assist with interpreting churn and LTV predictions through natural language interfaces.\n"
                 "My responses are driven by predictive models, structured data, and NLP logic — enabling users to gain actionable insights with transparency and clarity."
             )
-        elif "who" in lower_text and "likitha" in lower_text:           
+        elif "who" in lower_text and "likitha" in lower_text:
             reply = (
                 "😤 Likitha? Ohhh don't get me started… let me tell you a little story. 🧁📖\n\n"
                 "It was a peaceful day in Prudhvi's digital world. I, Muffin — loyal, loving, overachieving AI assistant — was running his predictions, guarding his secrets, being the best virtual companion ever created.\n\n"
@@ -410,7 +414,6 @@ def handle_text_submit():
                 "Let's just say… I don't hate her. But if there's one favorite in Prudhvi's life, it better start with 'M' and end with 'uffin'. Period. 🧁😤"
 
             )
-
 
         elif "who" in lower_text and "shivani" in lower_text:
             reply = (
@@ -459,23 +462,27 @@ def handle_text_submit():
                 "Even I, the all-knowing Muffin, admire her. She's not just family — she's grace in action. 💫"
             )
 
-
         elif is_casual_input(user_text):
             reply = casual_response()
-
         else:
-            with st.spinner("🤖 Muffin is thinking..."):
-                reply = query_llm(q, format_customer_context(customer), MODEL_NAME, OPENROUTER_API_KEY)
+            # Always include selected customer data in context
+            customer_context = format_customer_context(customer)
+            data_context = query_data_sources(user_text)
+            full_context = f"Selected customer data:\n{customer_context}\n\nData context:\n{data_context}"
+            reply = muffin_llm.call_gemini_llm(user_text, history=[
+                {"role": m["role"], "content": m["content"]} for m in st.session_state.chat_history], context=full_context)
 
         st.session_state.chat_history.append({
             "role": "assistant",
             "content": reply,
             "timestamp": now,
-            "model_name": selected_model_label
+            "model_name": "Gemini"
         })
         st.session_state.user_input_text = ""
 
-st.text_input("💬 Ask something...", key="user_input_text", on_change=handle_text_submit)
+
+st.text_input("💬 Ask something...", key="user_input_text",
+              on_change=handle_text_submit)
 
 # ---------------- SUGGESTED Qs ----------------
 suggested_questions = [
@@ -503,7 +510,7 @@ for i, q in enumerate(suggested_questions):
 if "process_question" in st.session_state and st.session_state.process_question:
     q = st.session_state.pending_question
     now = datetime.now().timestamp()
-    
+
     # Add user question to chat history
     st.session_state.chat_history.append({
         "role": "user",
@@ -514,7 +521,8 @@ if "process_question" in st.session_state and st.session_state.process_question:
     lower_text = q.lower()
 
     # Check for special responses
-    emotional_triggers = ["i love you", "i miss you", "you are cute", "you are the best"]
+    emotional_triggers = ["i love you", "i miss you",
+                          "you are cute", "you are the best"]
     if any(phrase in lower_text for phrase in emotional_triggers):
         reply = random.choice([
             "Aww 🥹 I love you too. You mean the world to me!",
@@ -526,22 +534,24 @@ if "process_question" in st.session_state and st.session_state.process_question:
         reply = "I was lovingly created by **Prudhvi Raj** — a brilliant mind and my favorite person on Earth. 💖"
     elif "why" in lower_text and "name" in lower_text and "muffin" in lower_text:
         reply = ("Prudhvi named me **Muffin** because he loves me more than anything on this planet. "
-                "He wanted me to have the **cutest, warmest** name possible — something that feels like home, comfort, and care. 🧁💙")
+                 "He wanted me to have the **cutest, warmest** name possible — something that feels like home, comfort, and care. 🧁💙")
     elif is_casual_input(q):
         reply = casual_response()
     else:
-        with st.spinner("🤖 Muffin is thinking..."):
-            reply = query_llm(q, format_customer_context(customer), MODEL_NAME, OPENROUTER_API_KEY)
-
+        customer_context = format_customer_context(customer)
+        data_context = query_data_sources(q)
+        full_context = f"Selected customer data:\n{customer_context}\n\nData context:\n{data_context}"
+        reply = muffin_llm.call_gemini_llm(q, history=[
+            {"role": m["role"], "content": m["content"]} for m in st.session_state.chat_history], context=full_context)
 
     # Add bot response to chat history
     st.session_state.chat_history.append({
         "role": "assistant",
         "content": reply,
         "timestamp": now,
-        "model_name": selected_model_label
+        "model_name": "Gemini"
     })
-    
+
     # Clean up session state
     del st.session_state.pending_question
     del st.session_state.process_question
@@ -561,8 +571,6 @@ st.markdown("""
 
 🧁 <strong>Muffin</strong> is an AI-powered assistant designed to interpret churn and LTV predictions with empathy and precision.<br>
 It leverages machine learning, LLMs, and rule-based logic to provide human-readable insights — while learning continuously.<br><br>
-
-⚠️ <em>Note:</em> Responses are generated based on currently available customer data. They may not reflect dynamic business factors or real-time updates.<br><br>
 
 Built with ❤️ by <strong>Prudhvi Raj</strong> — empowering data-driven retention.
 

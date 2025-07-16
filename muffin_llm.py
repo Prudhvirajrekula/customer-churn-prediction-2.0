@@ -1,53 +1,53 @@
 # muffin_llm.py
+# If you get an import error, run: pip install google-generativeai
 import requests
-import os
 import streamlit as st
+import os
 
-# ✅ Load OpenRouter API key (Streamlit Cloud > Local fallback)
-OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY")
+# Load Gemini API key
+GEMINI_API_KEY = st.secrets.get(
+    "GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
+GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+
+MUFFIN_PERSONA_ANSWERS = [
+    (lambda q: any(x in q for x in ["your name", "who are you", "what is your name", "what's your name", "assistant name", "are you muffin", "who is muffin", "muffin"]),
+     "I'm Muffin — your AI-powered churn and retention assistant, built with love and a sprinkle of personality! 🧁 If you need insights, predictions, or just a friendly chat, Muffin's here for you."),
+]
 
 
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
-HEADERS = {
-    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-    "Content-Type": "application/json",
-    "X-Title": "Muffin LLM Chatbot"
-}
-
-
-MODEL_NAME = "mistralai/mistral-7b-instruct:free"
-
-def call_muffin_llm(user_message, history=None):
+def call_gemini_llm(user_message, history=None, context=None):
     """
-    Call Mistral LLM via OpenRouter.
-    Args:
-        user_message (str): Input from user
-        history (list): Optional chat history as list of {role:..., content:...}
-    Returns:
-        str: Response from LLM
+    Call Gemini 2.0 Flash REST API with optional chat history and context.
+    If the user asks about Muffin or the assistant's name, always respond as Muffin.
     """
-    messages = history or []
-    messages.append({"role": "user", "content": user_message})
-
+    q = user_message.lower()
+    for matcher, answer in MUFFIN_PERSONA_ANSWERS:
+        if matcher(q):
+            return answer
+    prompt = ""
+    if context:
+        prompt += f"Context:\n{context}\n\n"
+    if history:
+        for msg in history:
+            prompt += f"{msg['role'].capitalize()}: {msg['content']}\n"
+    prompt += f"User: {user_message}\nAssistant:"
     payload = {
-        "model": MODEL_NAME,
-        "messages": messages,
-        "temperature": 0.7
+        "contents": [{"parts": [{"text": prompt}]}]
     }
-
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=15)
+        response = requests.post(
+            GEMINI_ENDPOINT + f"?key={GEMINI_API_KEY}",
+            json=payload
+        )
         response.raise_for_status()
         data = response.json()
-        return data['choices'][0]['message']['content'].strip()
-    
+        return data["candidates"][0]["content"]["parts"][0]["text"].strip()
     except Exception as e:
-        return f"⚠️ LLM Error: {str(e)}"
+        return f"⚠️ Gemini LLM Error: {str(e)}"
 
 
 # Example usage
 if __name__ == "__main__":
     query = "What features most impact churn risk?"
-    reply = call_muffin_llm(query)
+    reply = call_gemini_llm(query)
     print("LLM Response:\n", reply)
